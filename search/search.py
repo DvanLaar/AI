@@ -96,16 +96,16 @@ def breadthFirstSearch(problem):
     fringe = util.Queue()
     closed = set()
     current = problem.getStartState()
-    fringe.push((current, [], 0))
+    fringe.push((current, []))
 
     while not fringe.isEmpty():
-        current, moves, distance = fringe.pop()
+        current, moves = fringe.pop()
         if not current in closed:
             closed.add(current)
             if problem.isGoalState(current):
                 return moves
-            for x, y, z in problem.getSuccessors(current):
-                fringe.push((x, moves + [y], distance + z))
+            for x, y, _ in problem.getSuccessors(current):
+                fringe.push((x, moves + [y]))
 
     return []
 
