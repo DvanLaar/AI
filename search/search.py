@@ -88,7 +88,23 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from game import Directions
+    
+    fringe = util.Stack()
+    closed = set()
+    current = problem.getStartState()
+    fringe.push((current, []))
+    
+    while not fringe.isEmpty():
+        current, moves = fringe.pop()
+        if not current in closed:
+            closed.add(current)
+            if problem.isGoalState(current):
+                return moves
+            for x, y, _ in problem.getSuccessors(current):
+                fringe.push((x, moves + [y]))
+    return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
