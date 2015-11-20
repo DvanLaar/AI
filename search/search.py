@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+import searchAgents
 
 class SearchProblem:
     """
@@ -87,7 +88,23 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from game import Directions
+    
+    fringe = util.Stack()
+    closed = set()
+    current = problem.getStartState()
+    fringe.push((current, []))
+    
+    while not fringe.isEmpty():
+        current, moves = fringe.pop()
+        if not current in closed:
+            closed.add(current)
+            if problem.isGoalState(current):
+                return moves
+            for x, y, _ in problem.getSuccessors(current):
+                fringe.push((x, moves + [y]))
+    return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -122,7 +139,22 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    fringe = util.PriorityQueue()
+    closed = set()
+    current = problem.getStartState()
+    fringe.push((current, [], 0), heuristic(current, problem))
+
+    while not fringe.isEmpty():
+        current, moves, distance = fringe.pop()
+        if not current in closed:
+            closed.add(current)
+            if problem.isGoalState(current):
+                return moves
+            for x, y, z in problem.getSuccessors(current):
+                fringe.push((x, moves + [y], distance + z), distance + z + heuristic(x, problem))
+
+    return []
 
 
 # Abbreviations
