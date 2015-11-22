@@ -1,0 +1,8 @@
+Kunstmatige Intelligentie/
+search/grading.pyc
+search/searchTestClasses.pyc
+search/testParser.pyc
+search/projectParams.pyc
+search/textDisplay.pyc
+search/testClasses.pyc
+*.pyc
