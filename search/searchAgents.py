@@ -279,14 +279,15 @@ class CornersProblem(search.SearchProblem):
         """
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
-        top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.top, self.right = self.walls.height-2, self.walls.width-2
+        self.corners = ((1,1), (1,self.top), (self.right, 1), (self.right, self.top))
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
+
         "*** YOUR CODE HERE ***"
 
     def getStartState(self):
@@ -294,15 +295,13 @@ class CornersProblem(search.SearchProblem):
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        return self.startingPosition
+        return (self.startingPosition, False, False, False, False)
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        if self.cornersVisited == 3:
-            return state in self.corners
-        return False
+        return state[1] and state[2] and state[3] and state[4]
 
     def getSuccessors(self, state):
         """
@@ -317,18 +316,14 @@ class CornersProblem(search.SearchProblem):
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            if state in self.corners:
-                self.cornersVisited += 1
-            x, y = state
+            x, y = state[0]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if hitsWall:
                 continue
-            if self.startingGameState.hasFood(*state):
-                successors = successors + [((nextx, nexty), action, 0)]
-            else:
-                successors = successors + [((nextx, nexty), action, 1)]
+            newState = ((nextx, nexty), (nextx, nexty) == (1, 1) or state[1], (nextx, nexty) == (1, self.top) or state[2], (nextx, nexty) == (self.right, 1) or state[3], (nextx, nexty) == (self.right, self.top) or state[4])
+            successors = successors + [(newState, action, 1)]
             
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
