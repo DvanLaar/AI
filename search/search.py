@@ -157,19 +157,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
 
     fringe = util.PriorityQueue()
-    closed = set()
+    closed = []
     current = problem.getStartState()
     fringe.push((current, [], 0), heuristic(current, problem))
 
     while not fringe.isEmpty():
         current, moves, distance = fringe.pop()
         if not current in closed:
-            closed.add(current)
+            closed.append(current)
             if problem.isGoalState(current):
+                print problem.corners
+                print moves
                 return moves
             for x, y, z in problem.getSuccessors(current):
                 fringe.push((x, moves + [y], distance + z), distance + z + heuristic(x, problem))
-
+    print "nothing"
     return []
 
 

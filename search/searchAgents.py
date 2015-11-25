@@ -280,7 +280,7 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         self.top, self.right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,self.top), (self.right, 1), (self.right, self.top))
+        self.corners = [(1,1), (1,self.top), (self.right, 1), (self.right, self.top)]
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print 'Warning: no food in corner ' + str(corner)
@@ -330,7 +330,7 @@ class CornersProblem(search.SearchProblem):
                 continue
             if (nextx, nexty) in self.corners and (nextx, nexty) not in newState:
                 newState.append((nextx, nexty))
-            newState[0] = nextx, nexty
+            newState[0] = (nextx, nexty)
             successors.append((newState, action, 1))
             
             # Add a successor state to the successor list if the action is legal
@@ -372,26 +372,31 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
+    oldCorners = []
+    for corner in corners:
+        oldCorners.append(corner)
+    print "hoi"
     if len(corners) == 0:
-        return 0;
-    
+        print "doei"
+        return 0
+    print "hallo"
     for corner in corners:
         if corner in state:
-            corners.pop(corner)
+            corners.remove(corner)
     distanceToFirstCorner = problem.right+problem.top
     for corner in corners:
         problem.goal = corner
+        print state[0]
         distanceToThisCorner = manhattanHeuristic(state[0], problem)
         if distanceToFirstCorner > distanceToThisCorner:
             distanceToFirstCorner = distanceToThisCorner
             closestCorner = corner
     problem.goal = closestCorner
     heuristic = manhattanHeuristic(state[0],problem)
-    corners.pop(closestCorner)
-    heuristic += cornersHeuristic(closestCorner, problem)
-    
-    "*** YOUR CODE HERE ***"
+    corners.remove(closestCorner)
+    heuristic += cornersHeuristic([closestCorner], problem)
+    print oldCorners
+    problem.corners = oldCorners
     return heuristic
     
 class AStarCornersAgent(SearchAgent):
