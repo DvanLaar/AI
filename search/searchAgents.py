@@ -371,30 +371,31 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    oldCorners = []
-    for corner in corners:
-        oldCorners.append(corner)
-    for corner in corners:
-        if corner in state:
-            corners.remove(corner)
+    newCorners = []
+    for x in range(4):
+        if not corners[x] in state:
+            newCorners.append(corners[x])
     largestDistance = 0
-    for corner in corners:
-        mD = manhattanDistance(corner, state[0])
+    furthestCorner = None
+    for corner in newCorners:
+        mD = manhattanDistance(corner, state[0], problem)
         if mD > largestDistance:
             largestDistance = mD
             furthestCorner = corner
-    corners.remove(furthestCorner)
+    if furthestCorner is None:
+        return 0
     largestSecondDistance = 0
-    secondCorner = state[0]
-    for corner in corners:
-        mD = manhattanDistance(furthestCorner, corner)
-        if mD > largestSecondDistance and mD > largestDistance:
+    secondCorner = None
+    for corner in newCorners:
+        mD = manhattanDistance(furthestCorner, corner, problem)
+        if mD > largestSecondDistance:
             largestSecondDistance = mD
             secondCorner = corner
-    secondDistance = manhattanDistance(secondCorner, state[0])
+    if secondCorner is None:
+        return largestDistance
+    return manhattanDistance(furthestCorner, secondCorner, problem)+min(manhattanDistance(state[0], furthestCorner, problem),manhattanDistance(state[0],secondCorner,problem))
     
-    problem.corners = oldCorners
-    return secondDistance * 2 + largestDistance
+    
     
     
     
@@ -459,8 +460,139 @@ class AStarFoodSearchAgent(SearchAgent):
     def __init__(self):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
-
-def manhattanDistance(xy1,xy2):
+"""
+    isThereAHorizontalWall = False
+    if xy1[0] - xy2[0] != 0:
+        if xy1[1] < xy2[1]:
+            for y in range(xy1[1]+1, xy2[1]):
+                if problem.walls[xy1[0]][y]:
+                    isThereAHorizontalWall = True
+                    if xy1[0] < xy2[0]:
+                        for x in range(xy1[0]+1, xy2[0]):
+                            if not problem.walls[x][y]:
+                                isThereAHorizontalWall = False
+                    else:
+                        for x in range(xy2[0]+1, xy1[0]):
+                            if not problem.walls[x][y]:
+                                isThereAHorizontalWall = False
+        else:
+            for y in range(xy2[1]+1, xy1[1]):
+                if problem.walls[xy1[0]][y]:
+                    isThereAHorizontalWall = True
+                    if xy1[0] < xy2[0]:
+                        for x in range(xy1[0]+1, xy2[0]):
+                            if not problem.walls[x][y]:
+                                isThereAHorizontalWall = False
+                    else:
+                        for x in range(xy2[0]+1, xy1[0]):
+                            if not problem.walls[x][y]:
+                                isThereAHorizontalWall = False
+    if isThereAHorizontalWall:
+    """
+def manhattanDistance(xy1,xy2, problem):
+    
+    yOfWall = None
+    if xy1[1] < xy2[1]:
+        for y in range(xy1[1]+1, xy2[1]):
+            thisYHasWall = True
+            if xy1[0] < xy2[0]:
+                for x in range(xy1[0]+1, xy2[0]):
+                    if not problem.walls[x][y]:
+                        thisYHasWall = False
+            else:
+                for x in range(xy2[0]+1, xy1[0]):
+                    if not problem.walls[x][y]:
+                        thisYHasWall = False
+            if thisYHasWall:
+                yOfWall = y
+                break
+    else:
+        for y in range(xy2[1]+1, xy1[1]):
+            thisYHasWall = True
+            if xy1[0] < xy2[0]:
+                for x in range(xy1[0]+1, xy2[0]):
+                    if not problem.walls[x][y]:
+                        thisYHasWall = False
+            else:
+                for x in range(xy2[0]+1, xy1[0]):
+                    if not problem.walls[x][y]:
+                        thisYHasWall = False
+            if thisYHasWall:
+                yOfWall = y
+                break
+    if yOfWall is not None:
+        wallEndPoint1 = None
+        for dx in range(xy1[0]):
+            if not problem.walls[xy1[0]-dx][y]:
+                wallEndPoint1 = [xy1[0]-dx,y]
+                break;
+        wallEndPoint2 = None
+        dx = 1
+        while wallEndPoint2 is None:
+            try:
+                if not problem.walls[xy1[0]+dx][y]:
+                    wallEndPoint2 = [xy1[0]+dx,y]
+            except:
+                break
+            dx += 1
+        if wallEndPoint1 is None:
+            return manhattanDistance(xy1,wallEndPoint2, problem) + manhattanDistance(wallEndPoint2, xy2, problem)
+        if wallEndPoint2 is None:
+            return manhattanDistance(xy1,wallEndPoint1, problem) + manhattanDistance(wallEndPoint1, xy2, problem)
+        return min(manhattanDistance(xy1,wallEndPoint2, problem) + manhattanDistance(wallEndPoint2, xy2, problem), manhattanDistance(xy1,wallEndPoint1, problem) + manhattanDistance(wallEndPoint1, xy2, problem))
+        """
+    xOfWall = None
+    if xy1[0] < xy2[0]:
+        for x in range(xy1[0]+1, xy2[0]):
+            thisxHasWall = True
+            if xy1[1] < xy2[1]:
+                for y in range(xy1[1]+1, xy2[1]):
+                    if not problem.walls[x][y]:
+                        thisxHasWall = False
+            else:
+                for y in range(xy2[1]+1, xy1[1]):
+                    if not problem.walls[x][y]:
+                        thisxHasWall = False
+            if thisxHasWall:
+                xOfWall = x
+                break
+    else:
+        for x in range(xy2[0]+1, xy1[0]):
+            thisxHasWall = True
+            if xy1[1] < xy2[1]:
+                for y in range(xy1[1]+1, xy2[1]):
+                    if not problem.walls[x][y]:
+                        thisxHasWall = False
+            else:
+                for y in range(xy2[1]+1, xy1[1]):
+                    if not problem.walls[x][y]:
+                        thisxHasWall = False
+            if thisxHasWall:
+                xOfWall = x
+                break
+    if xOfWall is not None:
+        wallEndPoint1 = None
+        for dy in range(xy1[1]):
+            if not problem.walls[x][xy1[1]-dy]:
+                wallEndPoint1 = [x,xy1[1]-dy]
+                break;
+        wallEndPoint2 = None
+        dy = 1
+        while wallEndPoint2 is None:
+            try:
+                if not problem.walls[x][xy1[1]+dy]:
+                    wallEndPoint2 = [x,xy1[1]+dy]
+            except:
+                break
+            dy += 1
+        if wallEndPoint1 is None:
+            return manhattanDistance(xy1,wallEndPoint2, problem) + manhattanDistance(wallEndPoint2, xy2, problem)
+        if wallEndPoint2 is None:
+            return manhattanDistance(xy1,wallEndPoint1, problem) + manhattanDistance(wallEndPoint1, xy2, problem)
+        return min(manhattanDistance(xy1,wallEndPoint2, problem) + manhattanDistance(wallEndPoint2, xy2, problem), manhattanDistance(xy1,wallEndPoint1, problem) + manhattanDistance(wallEndPoint1, xy2, problem))
+      
+                """
+                
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
         
 def foodHeuristic(state, problem):
@@ -493,24 +625,30 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     highest = [0,0]
-    distance = [0,0]
+    location = None
     for food in foodGrid.asList():
-        a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
+        a = manhattanDistance([position[0],position[1]],[food[0],food[1]], problem)
         if a > highest[0]:
             highest[0] = a
             location = [food[0], food[1]]
+    highest2 = 0
+    highest2Location = None
     for food in foodGrid.asList():
-        if (food[0] <= position[0] and position[0] <= location[0]) or(food[0] >= position[0] and position[0] >= location[0]): 
-            if (food[1] <= position[1] and position[1] <= location[1]) or(food[1] >= position[1] and position[1] >= location[1]):
-                a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
-                if a > highest[1]:
-                    highest[1] = a
-
-    if highest[1] < highest[0]:
-        result = highest[1] + highest[1] + highest[0]
-    else:
-        result = highest[1] + highest[0] + highest[0]
-    
+        a = manhattanDistance([location[0],location[1]],[food[0],food[1]], problem)
+        if a > highest2:
+            highest2 = a
+            highest2Location = food
+            highest[1] = manhattanDistance([position[0],position[1]],[food[0],food[1]],problem)
+    if highest2Location is None:
+        result = highest[0]
+    else:    
+        result1 = highest[1] + manhattanDistance([location[0], location[1]], highest2Location, problem)
+        result2 = highest[0] + manhattanDistance([location[0], location[1]], highest2Location, problem)
+        if result1 < result2:
+            result = result1
+        else:
+            result = result2
+            
     return result
 
 class ClosestDotSearchAgent(SearchAgent):
