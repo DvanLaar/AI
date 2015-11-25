@@ -1,0 +1,10 @@
+9
+a At first I programmed a largest distance heuristic, this already resulted in less then about 9500 nodes explored
+which of course made me think is there an easy way to score some less nodes, quickly I realised I could also
+inflate the heuristic by calculating the distance between the node furthest away and the one furthest away
+on the other side of pacman, taking the shortest distance twice(which should really be the second one). This
+resulted in less then 9000 nodes which we found satisfactory.
+B we simply calculate the manhatten distance, with a bit of a complication to be able to distinguis between
+having to go back and forth and simply the furthest point but anytime you take a step the heuristic will not 
+decrease more then the cost of the step.
+C 8664
