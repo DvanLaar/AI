@@ -424,6 +424,9 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+def manhattanDistance(xy1,xy2):
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+        
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -453,8 +456,26 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    highest = [0,0]
+    distance = [0,0]
+    for food in foodGrid.asList():
+        a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
+        if a > highest[0]:
+            highest[0] = a
+            location = [food[0], food[1]]
+    for food in foodGrid.asList():
+        if (food[0] <= position[0] and position[0] <= location[0]) or(food[0] >= position[0] and position[0] >= location[0]): 
+            if (food[1] <= position[1] and position[1] <= location[1]) or(food[1] >= position[1] and position[1] >= location[1]):
+                a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
+                if a > highest[1]:
+                    highest[1] = a
+
+    if highest[1] < highest[0]:
+        result = highest[1] + highest[1] + highest[0]
+    else:
+        result = highest[1] + highest[0] + highest[0]
+    
+    return result
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
