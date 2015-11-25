@@ -6,3 +6,6 @@ search/projectParams.pyc
 search/textDisplay.pyc
 search/testClasses.pyc
 search/search.pyc
+search/game.pyc
+*.pyc
+search/ghostAgents.pyc

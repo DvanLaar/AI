@@ -356,7 +356,6 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -375,29 +374,29 @@ def cornersHeuristic(state, problem):
     oldCorners = []
     for corner in corners:
         oldCorners.append(corner)
-    print "hoi"
-    if len(corners) == 0:
-        print "doei"
-        return 0
-    print "hallo"
     for corner in corners:
         if corner in state:
             corners.remove(corner)
-    distanceToFirstCorner = problem.right+problem.top
+    largestDistance = 0
     for corner in corners:
-        problem.goal = corner
-        print state[0]
-        distanceToThisCorner = manhattanHeuristic(state[0], problem)
-        if distanceToFirstCorner > distanceToThisCorner:
-            distanceToFirstCorner = distanceToThisCorner
-            closestCorner = corner
-    problem.goal = closestCorner
-    heuristic = manhattanHeuristic(state[0],problem)
-    corners.remove(closestCorner)
-    heuristic += cornersHeuristic([closestCorner], problem)
-    print oldCorners
+        mD = manhattanDistance(corner, state[0])
+        if mD > largestDistance:
+            largestDistance = mD
+            furthestCorner = corner
+    corners.remove(furthestCorner)
+    largestSecondDistance = 0
+    secondCorner = state[0]
+    for corner in corners:
+        mD = manhattanDistance(furthestCorner, corner)
+        if mD > largestSecondDistance and mD > largestDistance:
+            largestSecondDistance = mD
+            secondCorner = corner
+    secondDistance = manhattanDistance(secondCorner, state[0])
+    
     problem.corners = oldCorners
-    return heuristic
+    return secondDistance * 2 + largestDistance
+    
+    
     
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
