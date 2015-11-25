@@ -169,6 +169,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 return moves
             for x, y, z in problem.getSuccessors(current):
                 fringe.push((x, moves + [y], distance + z), distance + z + heuristic(x, problem))
+                
     print "nothing"
     return []
 
