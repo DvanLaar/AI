@@ -166,8 +166,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if not current in closed:
             closed.append(current)
             if problem.isGoalState(current):
-                print problem.corners
-                print moves
                 return moves
             for x, y, z in problem.getSuccessors(current):
                 fringe.push((x, moves + [y], distance + z), distance + z + heuristic(x, problem))
