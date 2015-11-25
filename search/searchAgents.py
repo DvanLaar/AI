@@ -460,6 +460,9 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+def manhattanDistance(xy1,xy2):
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+        
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -489,8 +492,26 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    highest = [0,0]
+    distance = [0,0]
+    for food in foodGrid.asList():
+        a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
+        if a > highest[0]:
+            highest[0] = a
+            location = [food[0], food[1]]
+    for food in foodGrid.asList():
+        if (food[0] <= position[0] and position[0] <= location[0]) or(food[0] >= position[0] and position[0] >= location[0]): 
+            if (food[1] <= position[1] and position[1] <= location[1]) or(food[1] >= position[1] and position[1] >= location[1]):
+                a = manhattanDistance([position[0],position[1]],[food[0],food[1]])
+                if a > highest[1]:
+                    highest[1] = a
+
+    if highest[1] < highest[0]:
+        result = highest[1] + highest[1] + highest[0]
+    else:
+        result = highest[1] + highest[0] + highest[0]
+    
+    return result
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -520,8 +541,21 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        closest = None
+        for pellet in food.asList():
+            if closest == None:
+                closest = pellet
+                continue
+            distance1 = abs(closest[0]-startPosition[0]) + abs(closest[1]-startPosition[1])
+            distance2 = abs(pellet[0]-startPosition[0]) + abs(pellet[0]-startPosition[0])
+            if distance1 < distance2:
+                closest = pellet
+
+        self.searchType = AnyFoodSearchProblem
+        self.searchFunction = lambda prob: search.breadthFirstSearch(problem)
+        return search.breadthFirstSearch(problem)
+
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -555,10 +589,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         complete the problem definition.
         """
         x,y = state
-
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        return self.food[x][y]
+            
+        
 def mazeDistance(point1, point2, gameState):
     """
     Returns the maze distance between any two points, using the search functions
