@@ -378,7 +378,6 @@ def cornersHeuristic(state, problem):
     largestDistance = 0
     furthestCorner = None
     for corner in newCorners:
-        #mD = manhattanWallDistance(corner, state[0], problem)
         mD = manhattanDistance(corner, state[0])
         if mD > largestDistance:
             largestDistance = mD
@@ -389,14 +388,12 @@ def cornersHeuristic(state, problem):
     largestSecondDistance = 0
     secondCorner = None
     for corner in newCorners:
-        #mD = manhattanWallDistance(furthestCorner, corner, problem)
         mD = manhattanDistance(furthestCorner, corner)
         if mD > largestSecondDistance:
             largestSecondDistance = mD
             secondCorner = corner
     if secondCorner is None:
         return largestDistance
-    #return manhattanWallDistance(furthestCorner, secondCorner, problem)+min(manhattanWallDistance(state[0], furthestCorner, problem),manhattanWallDistance(state[0],secondCorner,problem))
     return manhattanDistance(furthestCorner, secondCorner)+min(manhattanDistance(state[0], furthestCorner),manhattanDistance(state[0],secondCorner))
     
     
