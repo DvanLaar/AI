@@ -378,8 +378,7 @@ def cornersHeuristic(state, problem):
     largestDistance = 0
     furthestCorner = None
     for corner in newCorners:
-        #mD = manhattanWallDistance(corner, state[0], problem)
-        mD = manhattanDistance(corner, state[0])
+        mD = manhattanWallDistance(corner, state[0], problem)
         if mD > largestDistance:
             largestDistance = mD
             furthestCorner = corner
@@ -389,15 +388,13 @@ def cornersHeuristic(state, problem):
     largestSecondDistance = 0
     secondCorner = None
     for corner in newCorners:
-        #mD = manhattanWallDistance(furthestCorner, corner, problem)
-        mD = manhattanDistance(furthestCorner, corner)
+        mD = manhattanWallDistance(furthestCorner, corner, problem)
         if mD > largestSecondDistance:
             largestSecondDistance = mD
             secondCorner = corner
     if secondCorner is None:
         return largestDistance
-    #return manhattanWallDistance(furthestCorner, secondCorner, problem)+min(manhattanWallDistance(state[0], furthestCorner, problem),manhattanWallDistance(state[0],secondCorner,problem))
-    return manhattanDistance(furthestCorner, secondCorner)+min(manhattanDistance(state[0], furthestCorner),manhattanDistance(state[0],secondCorner))
+    return manhattanWallDistance(furthestCorner, secondCorner, problem)+manhattanWallDistance(state[0],secondCorner,problem)
     
     
     
@@ -520,57 +517,7 @@ def manhattanWallDistance(xy1,xy2, problem):
         if wallEndPoint2 is None:
             return manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2)
         return min(manhattanDistance(xy1,wallEndPoint2) + manhattanDistance(wallEndPoint2, xy2), manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2))
-        
-    xOfWall = None
-    if xy1[0] < xy2[0]:
-        for x in range(xy1[0]+1, xy2[0]):
-            thisxHasWall = True
-            if xy1[1] < xy2[1]:
-                for y in range(xy1[1]+1, xy2[1]):
-                    if not problem.walls[x][y]:
-                        thisxHasWall = False
-            else:
-                for y in range(xy2[1]+1, xy1[1]):
-                    if not problem.walls[x][y]:
-                        thisxHasWall = False
-            if thisxHasWall:
-                xOfWall = x
-                break
-    else:
-        for x in range(xy2[0]+1, xy1[0]):
-            thisxHasWall = True
-            if xy1[1] < xy2[1]:
-                for y in range(xy1[1]+1, xy2[1]):
-                    if not problem.walls[x][y]:
-                        thisxHasWall = False
-            else:
-                for y in range(xy2[1]+1, xy1[1]):
-                    if not problem.walls[x][y]:
-                        thisxHasWall = False
-            if thisxHasWall:
-                xOfWall = x
-                break
-    if xOfWall is not None:
-        wallEndPoint1 = None
-        for dy in range(xy1[1]):
-            if not problem.walls[x][xy1[1]-dy]:
-                wallEndPoint1 = [x,xy1[1]-dy]
-                break;
-        wallEndPoint2 = None
-        dy = 1
-        while wallEndPoint2 is None:
-            try:
-                if not problem.walls[x][xy1[1]+dy]:
-                    wallEndPoint2 = [x,xy1[1]+dy]
-            except:
-                break
-            dy += 1
-        if wallEndPoint1 is None:
-            return manhattanDistance(xy1,wallEndPoint2) + manhattanDistance(wallEndPoint2, xy2)
-        if wallEndPoint2 is None:
-            return manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2)
-        return min(manhattanDistance(xy1,wallEndPoint2) + manhattanDistance(wallEndPoint2, xy2), manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2))
-                     
+
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
         
 def foodHeuristic(state, problem):

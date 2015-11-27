@@ -1,0 +1,35 @@
+1.
+
+a
+In the gameState is defined what the layout of the board is, where pacman, the ghosts and food are,
+aswell as the amount of food and ghosts.
+Calling 'generateSuccesor' with an action returns a new gameState, which is what the game would look
+like after completing said action. This is then passed as the new current gameState, when the agent
+decides to execute this action.
+
+b
+In the agentState is stored whether this agent is pacman or a ghost, its speed, and
+some variables neccesairy for choosing actions (ghosts for example have a 'scaredTimer').
+The agent can choose between North, East, South and West and then updates the agentState itself.
+For this, the agentState has options to copy, and to get some of the variables stored in the state.
+
+
+
+
+
+
+9.
+a
+For the foodHeuristic we started with the same general heuristic as in the cornersHeuristic.
+This was good for a solution that expanded about 7900 nodes in the test.
+To improve this, we then made a new distance algorithm that uses the old Manhattan distance, 
+which we used for Q6, as a basis, but also works around long horizontal and vertical walls.
+It does this by first testing whether there is a horizontal wall inside of the 'box' between the start and endpoints,
+and if so, it finds the end(s) of this wall. It then returns the smallest outcome between walking around the wall left or right,
+using the Manhattan distance here.
+If there is no horizontal wall in the box, it does the same for vertical walls. If these aren't present either, it uses standard Manhattan distance.
+
+b
+This heuristic is clearly admissible: the general method's admissibility follows from the answer to 8b, since this is the same algorithm.
+The use of manhattanWallDistance doesn't change this admissibility, since the manhattanWallDistance between two points is still 
+smaller than or equal to the actual distance pacman has to traverse to travel between these two points.
