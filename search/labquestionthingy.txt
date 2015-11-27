@@ -1,3 +1,17 @@
+Exercise 1
+a.
+b.
+c.
+A III
+B II
+C I
+d.
+the east and west agents modify the costs of steps in the west, negative or 
+positively so they prefer squares in their own direction. This causes them to
+generally go 2 diffrent ways instead of a normal searchagent which could be always 
+drawn to one side.
+
+
 Exercise 2
 In the exercised Q1 through Q4, the generic structure we used was the same. In each
 algorith, we firstly pushed the starting state to the fringe, along with the moves
@@ -82,6 +96,23 @@ where pacman has been. This also allows Pac-Man to go to places where he's alrea
 been, after he has visited a corner. This is essential for computing any path at
 all.
 
+Exercise 8
+a.
+our heuristic first looks for the farthest corner not visited, then the farthest 
+corner from the first corner. It then takes the distnace between the two corners and
+the distance between you and the second corner
+b.
+this heuristic is consistent because everytime you take a step towards the right direction
+the closest food should come closer and the heuristic reduce by the cost of taking the step.
+c.
+972
+
+Exercise 9
+a 
+b 
+c.
+1062
+
 Exercise 10
 a.
 For finding the closest dot to pacman, we used the manhattan heuristics. Then we
@@ -97,3 +128,6 @@ However, it would be shorter if Pac-Man went left first and then go to the far r
 c.
 The problem is that Pac-Man is very short sighted and doesn't take the shortest total
 path into account, just the shortest path to his goal at that point in time.
+
+11
+3/3 3/3 3/3 3/3 3/3 3/3 5/4 3/3    = 26/25 = 1 1/25
