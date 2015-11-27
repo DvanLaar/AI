@@ -85,6 +85,9 @@ the west. The costs of nodes in the west are therefor very high which makes Pac-
 go east instantly
 
 b.
+The first agent finds a path of cost 68.
+The second agent finds a path of cost 1.
+The third agent finds a path of cost 68719479864.
 
 
 Exercise 6
@@ -158,7 +161,16 @@ The constistency of this heuristic can also be proven:
 	which means it can suddenly detect a much larger vertical wall. This is the reason we decided to only look at horizontal walls.]
 	
 -The actual heuristic part is consistant because of the following reasoning:
-	
+	The consistency of the two point method is easy to see, anytime a step is taken, there are two options, 
+	the furthest node doesn't change, in which case you get a maximum of the cost of the step closer to the second node,
+	and the furthest node from the furthest node doens't change either so the maximal reduction in cost is exactly the cost of one step.
+
+	The second option is that the furthest node does change, in which case all the distances change but they never get smaller then
+	the cost of the step taken. If a new node becomes the furthest away node it wil be equally far, or one further, away from the last
+	furthest away node. The node furthest away from this node can never be more then 1 cost less away then it was from the last node.
+	Because every node has a predefined value for the node furthest away, if a node is not in the boundry of the nodegroup it can't
+	be the node furthest away from the player, because there is always one futher away, if it is, it has nodes that are equally far
+	away from it as from the other furthest nodes, otherwise it wouldn't be a candidate for the furtherst node to begin with.
 
 
 c.
