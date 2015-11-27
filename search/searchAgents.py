@@ -398,8 +398,6 @@ def cornersHeuristic(state, problem):
     
     
     
-    
-    
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):

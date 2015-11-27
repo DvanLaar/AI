@@ -92,14 +92,14 @@ def depthFirstSearch(problem):
     from game import Directions
     
     fringe = util.Stack()
-    closed = set()
+    closed = []
     current = problem.getStartState()
     fringe.push((current, []))
     
     while not fringe.isEmpty():
         current, moves = fringe.pop()
         if not current in closed:
-            closed.add(current)
+            closed.append(current)
             if problem.isGoalState(current):
                 return moves
             for x, y, _ in problem.getSuccessors(current):
@@ -132,14 +132,14 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
 
     fringe = util.PriorityQueue()
-    closed = set()
+    closed = []
     current = problem.getStartState()
     fringe.push((current, [], 0), 0)
 
     while not fringe.isEmpty():
         current, moves, totalCost = fringe.pop()
         if not current in closed:
-            closed.add(current)
+            closed.append(current)
             if problem.isGoalState(current):
                 return moves
             for x, y, z in problem.getSuccessors(current):
@@ -169,8 +169,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 return moves
             for x, y, z in problem.getSuccessors(current):
                 fringe.push((x, moves + [y], distance + z), distance + z + heuristic(x, problem))
-                
-    print "nothing"
     return []
 
 

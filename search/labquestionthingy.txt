@@ -1,0 +1,133 @@
+Exercise 1
+a.
+b.
+c.
+A III
+B II
+C I
+d.
+the east and west agents modify the costs of steps in the west, negative or 
+positively so they prefer squares in their own direction. This causes them to
+generally go 2 diffrent ways instead of a normal searchagent which could be always 
+drawn to one side.
+
+
+Exercise 2
+In the exercised Q1 through Q4, the generic structure we used was the same. In each
+algorith, we firstly pushed the starting state to the fringe, along with the moves
+to get to that state. Then we would loop untill the fringe is empty. Inside the loop
+, we pop a state out of the fringe, get a list with it's successors, return a path
+if it leads to a goal state and check if any states have already been visited. Then
+the states that are left are pushed onto the fringe
+
+Exercise 3
+a.
+If we have a game tree with all possible game states from a starting space, and the
+goal state is in this tree, then depth first search will always find the correct
+solution to this problem. Depth first search doesn't skip any nodes in the tree, it
+only defines in what order they are visited. Since the goal state is in the game tree
+, dfs will reach it eventually
+b.
+Depth first search does not always give a least cost solution. It just tries to make
+a path to the goal state and once it reaches the goal, dfs is done. however, this
+path might not contain the shortest route, it's just the first route that has been
+found. the openMaze map of this assignment gives a great example of this.
+c.
+The exploration order is exactly as we would have expected. Pac-Man does not visit
+all the states that have been expanded on his way to the goal. If the first path
+that the algorithm tries does not lead to a goal, a bunch of nodes have been
+expanded but Pac-Man won't visit them, simply because they don't lead to a goal
+
+Exercise 4
+a.
+If we compose a game tree with all the possible states of a pacman game, and the
+goal state is in that tree, then bfs will find a path to this goal state. The only
+difference between bfs and dfs is the order in which states will be explored, but
+if need be, all states will be explored. That's why bfs is complete
+b.
+Granted that the costs of all the possible action in a game are the same, bfs will
+find the least cost solution. Simply because the node that has been expanded the
+least will be expanded next. If all the actions have the same cost, the nodes that
+have been expanded last have the same cost too. Because the path to the goal state
+will be returned as soon as the goal state is found, it should have the least cost.
+This does not hold up if the costs are not the same for each action
+c.
+Because the algorithm has been written in the most general fashion possible, it also
+works for the eightpuzzle. We tested it many times and it returns the correct solution
+
+Exercise 5
+a.
+The first agent should just find the least cost solution to a pathfinding problem.
+This is achieved by expanding the paths to other nodes with the least cost first.
+In the case of a Pac-Man board, all the actions have the same cost and the ucs works
+the same as bfs.
+The stayWestAgent should find a path through the west side of the maze, because all
+of the food pellets are located there. It does so by editing the costs so that nodes
+on the west have a lower cost than nodes on the east side of the board.
+The stayEastAgent should go east as quick as possible, because there are ghosts in 
+the west. The costs of nodes in the west are therefor very high which makes Pac-Man
+go east instantly
+b.
+
+
+Exercise 6
+DFS:
+dfs chooses a very swirly path to the goal which clearly isn't optimal. This is however
+one of the first paths that dfs chooses to calculate to see if it leads to the goal
+BFS:
+bfs chooses a path that is a least cost solution to the goal. It does explore a lot
+of nodes, but it gets to the end as quick as it can
+UCS:
+this is the same as BFS, because UCS is exactly the same as BFS if all the costs are
+the same. Because the cost function is: lambda x: 1, all the costs are the same and
+ucs is bfs
+A*:
+computes the same least cost path to the goal as BFS and UCS, but because of the
+heuristics, almost a hundred less nodes have been expanded.
+
+Exercise 7
+In the state it is important to note the coordinates of Pac-Man. This is essential
+to compute the successor nodes. We also need to keep track of how many and which
+corners have been visited. This could be done with a Boolean for each corner, but
+that isn't too sophisticated. Instead, we chose to represent the state as a list
+of coordinates. The first coordinate is always the coordinate where Pac-Man is in
+that state. Any coordinates that follow this are the coordinates of the corners
+where pacman has been. This also allows Pac-Man to go to places where he's already
+been, after he has visited a corner. This is essential for computing any path at
+all.
+
+Exercise 8
+a.
+our heuristic first looks for the farthest corner not visited, then the farthest 
+corner from the first corner. It then takes the distnace between the two corners and
+the distance between you and the second corner
+b.
+this heuristic is consistent because everytime you take a step towards the right direction
+the closest food should come closer and the heuristic reduce by the cost of taking the step.
+c.
+972
+
+Exercise 9
+a 
+b 
+c.
+1062
+
+Exercise 10
+a.
+For finding the closest dot to pacman, we used the manhattan heuristics. Then we
+would simulate a problem where the state where Pac-Man is located at is the starting
+state and the closest dot to Pac-Man is the goal state. We used the search function
+bfs, because it assures the least cost path and it is a simple algorithm for this
+simple problem.
+b.
+. P.  .
+In the example above, the closest dot search would move right first, then eat the
+dot(.) on the far left and finally send Pac-Man(P) to the node on the far right.
+However, it would be shorter if Pac-Man went left first and then go to the far right.
+c.
+The problem is that Pac-Man is very short sighted and doesn't take the shortest total
+path into account, just the shortest path to his goal at that point in time.
+
+11
+3/3 3/3 3/3 3/3 3/3 3/3 5/4 3/3    = 26/25 = 1 1/25
