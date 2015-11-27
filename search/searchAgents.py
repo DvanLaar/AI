@@ -511,10 +511,10 @@ def manhattanWallDistance(xy1,xy2, problem):
                 break
             dx += 1
         if wallEndPoint1 is None:
-            return manhattanDistance(xy1,wallEndPoint2) + manhattanDistance(wallEndPoint2, xy2)
+            return manhattanWallDistance(xy1,wallEndPoint2,problem) + manhattanWallDistance(wallEndPoint2, xy2,problem)
         if wallEndPoint2 is None:
-            return manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2)
-        return min(manhattanDistance(xy1,wallEndPoint2) + manhattanDistance(wallEndPoint2, xy2), manhattanDistance(xy1,wallEndPoint1) + manhattanDistance(wallEndPoint1, xy2))
+            return manhattanWallDistance(xy1,wallEndPoint1,problem) + manhattanWallDistance(wallEndPoint1, xy2,problem)
+        return min(manhattanWallDistance(xy1,wallEndPoint2,problem) + manhattanWallDistance(wallEndPoint2, xy2,problem), manhattanWallDistance(xy1,wallEndPoint1,problem) + manhattanWallDistance(wallEndPoint1, xy2,problem))
 
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
         
