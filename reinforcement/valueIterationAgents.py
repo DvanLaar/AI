@@ -48,8 +48,10 @@ class ValueIterationAgent(ValueEstimationAgent):
         for i in range(iterations):
             valuesPrime = self.values.copy()
             for state in self.mdp.getStates():
+                if self.mdp.isTerminal(state):
+                    valuesPrime[state] = 0
+                    continue
                 action = self.computeActionFromValues(state)
-                print action in self.mdp.getPossibleActions(state)
                 valuesPrime[state] = self.computeQValueFromValues(state, action)
             self.values = valuesPrime
             
@@ -70,8 +72,8 @@ class ValueIterationAgent(ValueEstimationAgent):
         som = 0
         for Pstate, prob in self.mdp.getTransitionStatesAndProbs(state, action):
             reward = self.mdp.getReward(state, action, Pstate)
-            value = self.values[state]
-            som += prob * (reward + value)
+            value = self.values[Pstate]
+            som += prob * (reward + value * self.discount)
         return som
             
 
