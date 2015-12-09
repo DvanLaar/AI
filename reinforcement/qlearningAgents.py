@@ -63,7 +63,7 @@ class QLearningAgent(ReinforcementAgent):
             if bestValue == 0.0:
                 bestValue = self.qValues[(state, action)]
                 continue
-            if self.qValues[(state, action)] >= bestValue:
+            if self.qValues[(state, action)] > bestValue:
                 best = self.qValues[(state, action)]
         return bestValue
 
