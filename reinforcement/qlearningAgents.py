@@ -58,6 +58,7 @@ class QLearningAgent(ReinforcementAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
         """
+        # See the equivalent in valueIterationAgent
         bestValue = None
         for action in self.getLegalActions(state):
             if bestValue == None:
@@ -65,7 +66,7 @@ class QLearningAgent(ReinforcementAgent):
                 continue
             if self.getQValue(state, action) > bestValue:
                 bestValue= self.getQValue(state, action)
-        if bestValue == None:
+        if bestValue == None: #This happens when there is no legal action, so you are in a terminal state
             return 0.0
         return bestValue
 
@@ -75,19 +76,20 @@ class QLearningAgent(ReinforcementAgent):
           are no legal actions, which is the case at the terminal state,
           you should return None.
         """
-        equal = []
+        
+        equal = [] # equal is the list of action(s) that are the best action. If there are multiple best actions (same score), they get appended to this list
         for action in self.getLegalActions(state):
-            if equal == []:
+            if equal == []: # Put first action in equal
                 equal = [action]
                 continue
-            if self.getQValue(state, action) > self.getQValue(state, equal[0]):
+            if self.getQValue(state, action) > self.getQValue(state, equal[0]): #replace equal with this one
                 equal = [action]
-                continue
-            if self.getQValue(state, action) == self.getQValue(state, equal[0]):
+                continue        
+            if self.getQValue(state, action) == self.getQValue(state, equal[0]): #Add this one to equal
                 equal.append(action)
         if equal == []:
-            return None
-        return random.choice(equal)
+            return None         #Oh no, there are no legal actions!
+        return random.choice(equal) #choose a random best action
 
     def getAction(self, state):
         """
@@ -102,9 +104,9 @@ class QLearningAgent(ReinforcementAgent):
         """
         # Pick Action
         legalActions = self.getLegalActions(state)
-        if util.flipCoin(self.epsilon):
+        if util.flipCoin(self.epsilon): # pick a random action with chance epsilon
             return random.choice(legalActions)
-        return self.computeActionFromQValues(state)
+        return self.computeActionFromQValues(state) #be smart with chance (1-epsilon)
 
     def update(self, state, action, nextState, reward):
         """
@@ -115,7 +117,7 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        sample = reward + self.discount * self.computeValueFromQValues(nextState)
+        sample = reward + self.discount * self.computeValueFromQValues(nextState) #update the qvalues using the given formula
         self.qValues[(state, action)] = self.getQValue(state, action) + self.alpha * (sample - self.getQValue(state, action))
 
     def getPolicy(self, state):
@@ -179,16 +181,16 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         sum = 0.0
-        for feature in self.featExtractor.getFeatures(state, action):
-            sum += self.weights[feature] * self.featExtractor.getFeatures(state, action)[feature]
+        for feature in self.featExtractor.getFeatures(state, action): # index 'feature' in weights corresponds with index 'weights'
+            sum += self.weights[feature] * self.featExtractor.getFeatures(state, action)[feature] #for dotProduct, multiply the elements pairwise and add them.
         return sum
 
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
         """
-        difference = (reward + self.discount * self.computeValueFromQValues(nextState)) - self.getQValue(state, action)
-        for weight in self.weights:
+        difference = (reward + self.discount * self.computeValueFromQValues(nextState)) - self.getQValue(state, action) #see given formula
+        for weight in self.weights: #this is practically the same as 'for feature in ..'
             self.weights[weight] = self.weights[weight] + self.alpha * difference * self.featExtractor.getFeatures(state, action)[weight]
 
     def final(self, state):

@@ -44,18 +44,19 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.values = util.Counter() # A Counter is a dict with default 0
 
         # Write value iteration code here
-        
-        for i in range(iterations):
+        # This is our value iteration code
+        # it iterates 'iterations' times, and each iteration
+        # it updates the values based on the possible outcomes.
+        for i in range(iterations): 
             valuesPrime = self.values.copy()
-            for state in self.mdp.getStates():
-                if self.mdp.isTerminal(state):
+            for state in self.mdp.getStates():  
+                if self.mdp.isTerminal(state):  
                     valuesPrime[state] = 0
                     continue
                 action = self.computeActionFromValues(state)
                 valuesPrime[state] = self.computeQValueFromValues(state, action)
             self.values = valuesPrime
             
-
 
     def getValue(self, state):
         """
@@ -69,11 +70,12 @@ class ValueIterationAgent(ValueEstimationAgent):
           Compute the Q-value of action in state from the
           value function stored in self.values.
         """
-        som = 0
-        for Pstate, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-            reward = self.mdp.getReward(state, action, Pstate)
-            value = self.values[Pstate]
-            som += prob * (reward + value * self.discount)
+        
+        som = 0 # start at 0
+        for Pstate, prob in self.mdp.getTransitionStatesAndProbs(state, action): # for every term
+            reward = self.mdp.getReward(state, action, Pstate) # find the value
+            value = self.values[Pstate]                         # of the term
+            som += prob * (reward + value * self.discount)      # and add it to the sum
         return som
             
 
@@ -87,13 +89,13 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         bestAction = None
-        for action in self.mdp.getPossibleActions(state):
-            if bestAction == None:
-                bestAction = action
+        for action in self.mdp.getPossibleActions(state): #loop for every action
+            if bestAction == None:  
+                bestAction = action                 #set bestaction to this
                 continue
-            if self.computeQValueFromValues(state, action) > self.computeQValueFromValues(state, bestAction):
-                bestAction = action
-        return bestAction
+            if self.computeQValueFromValues(state, action) > self.computeQValueFromValues(state, bestAction): #if this action is better then the best action
+                bestAction = action                                                                            # set bestaction to this
+        return bestAction           #done
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)

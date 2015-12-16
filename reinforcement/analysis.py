@@ -19,6 +19,8 @@
 # Set the given parameters to obtain the specified policies through
 # value iteration.
 
+# for comments on this check the exersizes
+
 def question2():
     answerDiscount = 0.9
     answerNoise = 0.01
