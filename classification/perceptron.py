@@ -57,7 +57,7 @@ class PerceptronClassifier:
                 "*** YOUR CODE HERE ***"
                 #Code
                 classified = self.classify([trainingData[i]])
-                if (classified[0] == trainingLabels[i]):
+                if classified[0] == trainingLabels[i]:
                     continue
                 self.weights[classified[0]] -= trainingData[i]
                 self.weights[trainingLabels[i]] += trainingData[i]

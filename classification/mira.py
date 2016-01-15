@@ -62,17 +62,44 @@ class MiraClassifier:
         """
         "*** YOUR CODE HERE ***"
         #Code
-        for i in range(len(trainingData)):
-            for C in range(len(Cgrid)):
-                tau = min(C, ding)
-                classified = self.classify([trainingData[i]])
-                if (classified[0] == trainingLabels[i]):
-                    continue
-                self.weights[classified[0]] -= tau * trainingData[i]
-                self.weights[trainingLabels[i]] += tau * trainingData[i]
+        resultingWeights = []
+        startingWeights = self.weights.copy()
+        for C in Cgrid:
+            for iteration in range(self.max_iterations):
+                print "Starting iteration ", iteration, ", with C-value ", C
+                for i in range(len(trainingData)):
+                    classified = self.classify([trainingData[i]])[0]
+                    if classified == trainingLabels[i]:
+                        continue
+                    tau = min(C, ((self.weights[classified]-self.weights[trainingLabels[i]])*trainingData[i]+1.0)/((trainingData[i] + trainingData[i])*trainingData[i]))
+                    self.weights[classified] -= self.counterMul(tau,trainingData[i])
+                    self.weights[trainingLabels[i]] += self.counterMul(tau,trainingData[i])
+            resultingWeights.append(self.weights.copy())
+            self.weights = startingWeights.copy()
+        scoreOfCValues = util.Counter()
+        for C in range(len(Cgrid)):
+            correct = 0
+            self.weights = resultingWeights[C].copy()
+            classifiedStuff = map(lambda x: self.classify(x), validationData)[0]
+            
+            for i in range(len(validationData)):
+                if classifiedStuff[i] == validationLabels[i]:
+                    correct += 1
+            scoreOfCValues[C] = correct
+        bestCIndex = scoreOfCValues.argMax()
+        self.weights = resultingWeights[bestCIndex]
+                    
+    def counterMul(self, x, y):
+        result = util.Counter()
+        keys = y.keys()
+        for key in keys:
+            result[key] = x * y[key]
+        return result
+            
         #Code
         "*** END MY CODE ***"
 
+        
     def classify(self, data ):
         """
         Classifies each datum as the label that most closely matches the prototype vector
