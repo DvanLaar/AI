@@ -80,6 +80,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
             datum = trainingData[i]
             label = trainingLabels[i]
             commonPrior[label] += 1
+            print len(datum)
             for feat, value in datum.items():
                 commonCounts[(feat,label)] += 1
                 if value > 0: # assume binary value

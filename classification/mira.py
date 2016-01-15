@@ -61,7 +61,17 @@ class MiraClassifier:
         representing a vector of values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #Code
+        for i in range(len(trainingData)):
+            for C in range(len(Cgrid)):
+                tau = min(C, ding)
+                classified = self.classify([trainingData[i]])
+                if (classified[0] == trainingLabels[i]):
+                    continue
+                self.weights[classified[0]] -= tau * trainingData[i]
+                self.weights[trainingLabels[i]] += tau * trainingData[i]
+        #Code
+        "*** END MY CODE ***"
 
     def classify(self, data ):
         """
