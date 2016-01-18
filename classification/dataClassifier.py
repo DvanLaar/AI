@@ -76,10 +76,35 @@ def enhancedFeatureExtractorDigit(datum):
     ##
     """
     features =  basicFeatureExtractorDigit(datum)
-
+    whitepixels = 0
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
+    for x in range(DIGIT_DATUM_WIDTH):
+        for y in range(DIGIT_DATUM_HEIGHT):
+            if datum.getPixel(x, y) == 0:
+                whitepixels += 1
+                #hier berekenen we het aantal pixels die 0 zijn in het plaatje
+    for x in range(DIGIT_DATUM_WIDTH):
+        for y in range(DIGIT_DATUM_HEIGHT):
+            if datum.getPixel(x,y) == 0:
+                p = x
+                q = y
+                # vind de eerste 0 pixel
+    edge = [(p, q)]
+    border = 1
+    extraEdge = [(p, q)]
+    while edge:        #loop vanaf de eerste 0 pixel over alle aangrenzende 0 pixels heen en tel het aantal dat in de rand zit
+        for (x, y) in edge:
+            edge.remove((x,y))
+            for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                if 0<=s<DIGIT_DATUM_WIDTH and 0<=t<DIGIT_DATUM_HEIGHT and \
+                	datum.getPixel(s, t) == 0 and (s,t) not in extraEdge:
+                    border += 1
+                    edge.append((s, t))
+                    extraEdge.append((s,t))
+    if whitepixels - border > 0:         # kijk of alle 0 pixels in de rand zitten en geef holes de goede waarde
+        features['holes'] = 1
+    else:
+        features['holes'] = 0
     return features
 
 
@@ -163,20 +188,20 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
     This code won't be evaluated. It is for your own optional use
     (and you can modify the signature if you want).
     """
-
+    """
     # Put any code here...
     # Example of use:
-    # for i in range(len(guesses)):
-    #     prediction = guesses[i]
-    #     truth = testLabels[i]
-    #     if (prediction != truth):
-    #         print "==================================="
-    #         print "Mistake on example %d" % i
-    #         print "Predicted %d; truth is %d" % (prediction, truth)
-    #         print "Image: "
-    #         print rawTestData[i]
-    #         break
-
+    for i in range(len(guesses)):
+        prediction = guesses[i]
+        truth = testLabels[i]
+        if (prediction != truth):
+            print "==================================="
+            print "Mistake on example %d" % i
+            print "Predicted %d; truth is %d" % (prediction, truth)
+            print "Image: "
+            print rawTestData[i]
+            break
+    """
 
 ## =====================
 ## You don't have to modify any code below.
