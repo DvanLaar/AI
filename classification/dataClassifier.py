@@ -24,6 +24,8 @@ import samples
 import sys
 import util
 from pacman import GameState
+from game import Directions
+from game import Actions
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -149,8 +151,75 @@ def enhancedPacmanFeatures(state, action):
     """
     features = util.Counter()
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Code
+    willBeFeatures = []
+    newState = state.generatePacmanSuccessor(action)
+    #moving
+    willBeFeatures.append(action == Directions.STOP)
+    
+    a, b = newState.getPacmanPosition()
+    #food
+    willBeFeatures.append(state.hasFood(a,b))
+    foods = listify(state.getFood())
+    willBeFeatures.append(findDistance(state, foods) < findDistance(newState, foods))
+    
+    #suicide
+    distanceToGhost = findDistance(state, state.getGhostPositions())
+    willBeFeatures.append(distanceToGhost < findDistance(newState, state.getGhostPositions()))
+    
+    
+    #smart
+    willBeFeatures.append(findDistance(state, state.getGhostPositions()) > 1)
+    #willBeFeatures.append(findDistance(state, state.getCapsules()) < findDistance(newState, state.getCapsules()))
+    
+    for i in range(len(willBeFeatures)):
+        features[i] = -1
+        if willBeFeatures[i]:
+            features[i] = 1
+    #Code
+    "*** END MY CODE ***"
     return features
+    
+def listify(grid):
+    result = []
+    for column in range(grid.width):
+        for row in range(len(grid[column])):
+            if grid[column][row]:
+                result.append((column, row))
+    return result
+   
+def findDistance(state, list):
+    
+    x, y = state.getPacmanPosition()
+    closest = None
+    for a,b in list:
+        if closest == None:
+            closest = abs(x-a) + abs(y-b)
+            continue
+        thisDistance = abs(x-a) + abs(y-b)
+        if thisDistance < closest:
+            closest = thisDistance
+    return closest
+    
+def breadthFirstSearch(state):
+    fringe = util.Queue()
+    closed = []
+    current = state
+    fringe.push((current, 0))
+    
+    while not fringe.isEmpty():
+        current, steps = fringe.pop()
+        if current in closed:
+            continue
+        closed.append(current)
+        a, b = current.getPacmanPosition()
+        if state.hasFood(a, b):
+            return steps
+        for action in current.getLegalPacmanActions():
+            x = current.generatePacmanSuccessor(action)
+            fringe.push((x, steps + 1))
+    return 0
+            
 
 
 def contestFeatureExtractorDigit(datum):
