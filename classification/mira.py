@@ -90,6 +90,7 @@ class MiraClassifier:
         #Find the best C-value    
         bestCIndex = scoreOfCValues.argMax()
         self.weights = resultingWeights[bestCIndex]
+        print str(Cgrid[bestCIndex]) + "is the best C-value"
     
     #Help function to multiply a counter y by an integer x.
     def counterMul(self, x, y):
