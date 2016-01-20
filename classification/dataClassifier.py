@@ -166,20 +166,25 @@ def enhancedPacmanFeatures(state, action):
     #suicide
     distanceToGhost = findDistance(state, state.getGhostPositions())
     willBeFeatures.append(distanceToGhost < findDistance(newState, state.getGhostPositions()))
-    
+    willBeFeatures.append(newState.isWin())
+    willBeFeatures.append(newState.isLose())
     
     #smart
-    willBeFeatures.append(findDistance(state, state.getGhostPositions()) > 1)
-    #willBeFeatures.append(findDistance(state, state.getCapsules()) < findDistance(newState, state.getCapsules()))
-    
+    willBeFeatures.append(findDistance(newState, state.getGhostPositions()) > 1)
+    #willBeFeatures.append(len(state.getCapsules()) < len(newState.getCapsules()))
+    willBeFeatures.append(state.getNumFood() > newState.getNumFood())
+    willBeFeatures.append((findDistance(state, foods) > findDistance(newState, foods)) or (state.getNumFood() > newState.getNumFood()))
     for i in range(len(willBeFeatures)):
         features[i] = -1
         if willBeFeatures[i]:
             features[i] = 1
+            
+    features["score"] = state.getScore() - newState.getScore()
     #Code
     "*** END MY CODE ***"
     return features
     
+    "*** HELP FUNCTIONS FOR ^^^***"
 def listify(grid):
     result = []
     for column in range(grid.width):
@@ -201,26 +206,6 @@ def findDistance(state, list):
             closest = thisDistance
     return closest
     
-def breadthFirstSearch(state):
-    fringe = util.Queue()
-    closed = []
-    current = state
-    fringe.push((current, 0))
-    
-    while not fringe.isEmpty():
-        current, steps = fringe.pop()
-        if current in closed:
-            continue
-        closed.append(current)
-        a, b = current.getPacmanPosition()
-        if state.hasFood(a, b):
-            return steps
-        for action in current.getLegalPacmanActions():
-            x = current.generatePacmanSuccessor(action)
-            fringe.push((x, steps + 1))
-    return 0
-            
-
 
 def contestFeatureExtractorDigit(datum):
     """
