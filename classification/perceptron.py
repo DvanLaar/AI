@@ -56,10 +56,11 @@ class PerceptronClassifier:
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
                 #Code
-                classified = self.classify([trainingData[i]])
-                if classified[0] == trainingLabels[i]:
+                classified = self.classify([trainingData[i]])[0] # guess the i-th data.
+                if classified == trainingLabels[i]: # guessed correctly
                     continue
-                self.weights[classified[0]] -= trainingData[i]
+                
+                self.weights[classified] -= trainingData[i]
                 self.weights[trainingLabels[i]] += trainingData[i]
                 #Code
                 "*** END MY CODE ***"
