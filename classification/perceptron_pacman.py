@@ -50,8 +50,8 @@ class PerceptronClassifierPacman(PerceptronClassifier):
             print "Starting iteration ", iteration, "..."
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
-                classified = self.classify([trainingData[i]]) #het deel wat lijkt op Q1
+                classified = self.classify([trainingData[i]]) #This is basically the same as Q1
                 if classified[0] == trainingLabels[i]:
                     continue
-                self.weights -= trainingData[i][0][classified[0]]  #ontleding van de ietwat complexe structuur
+                self.weights -= trainingData[i][0][classified[0]]
                 self.weights += trainingData[i][0][trainingLabels[i]]
