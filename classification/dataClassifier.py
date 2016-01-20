@@ -80,21 +80,21 @@ def enhancedFeatureExtractorDigit(datum):
     features =  basicFeatureExtractorDigit(datum)
     whitepixels = 0
     "*** YOUR CODE HERE ***"
+    statement = true
     for x in range(DIGIT_DATUM_WIDTH):
         for y in range(DIGIT_DATUM_HEIGHT):
             if datum.getPixel(x, y) == 0:
                 whitepixels += 1
-                #hier berekenen we het aantal pixels die 0 zijn in het plaatje
-    for x in range(DIGIT_DATUM_WIDTH):
-        for y in range(DIGIT_DATUM_HEIGHT):
-            if datum.getPixel(x,y) == 0:
+            if statement:
                 p = x
                 q = y
-                # vind de eerste 0 pixel
+                statement = false
+                #A for-loop to check how many pixels aren't filled in.
+                
     edge = [(p, q)]
     border = 1
     extraEdge = [(p, q)]
-    while edge:        #loop vanaf de eerste 0 pixel over alle aangrenzende 0 pixels heen en tel het aantal dat in de rand zit
+    while edge:        #A loop form the first pixel on the edge around the edge. This also counts how long the edge is.
         for (x, y) in edge:
             edge.remove((x,y))
             for (s, t) in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
@@ -103,7 +103,7 @@ def enhancedFeatureExtractorDigit(datum):
                     border += 1
                     edge.append((s, t))
                     extraEdge.append((s,t))
-    if whitepixels - border > 0:         # kijk of alle 0 pixels in de rand zitten en geef holes de goede waarde
+    if whitepixels - border > 0:         #Check if all the pixels on a edge are on the outer edge. If not, there has to be a loop.
         features['holes'] = 1
     else:
         features['holes'] = 0
@@ -152,28 +152,30 @@ def enhancedPacmanFeatures(state, action):
     features = util.Counter()
     "*** YOUR CODE HERE ***"
     #Code
+    #Creating a list of booleans which will be converted to features and generating the next state.
     willBeFeatures = []
     newState = state.generatePacmanSuccessor(action)
-    #moving
+    #Adding a feature that checks if Pacman has moved.
     willBeFeatures.append(action == Directions.STOP)
     
     a, b = newState.getPacmanPosition()
-    #food
+    #Adding features that check if Pacman is eating and if Pacman has come closer to food.
     willBeFeatures.append(state.hasFood(a,b))
     foods = listify(state.getFood())
     willBeFeatures.append(findDistance(state, foods) < findDistance(newState, foods))
     
-    #suicide
+    #Adding features relating to ghosts, like the smallest distance to a ghost.
     distanceToGhost = findDistance(state, state.getGhostPositions())
     willBeFeatures.append(distanceToGhost < findDistance(newState, state.getGhostPositions()))
     willBeFeatures.append(newState.isWin())
     willBeFeatures.append(newState.isLose())
     
-    #smart
+    #Other features, like if the amount of food has decreased
     willBeFeatures.append(findDistance(newState, state.getGhostPositions()) > 1)
-    #willBeFeatures.append(len(state.getCapsules()) < len(newState.getCapsules()))
     willBeFeatures.append(state.getNumFood() > newState.getNumFood())
     willBeFeatures.append((findDistance(state, foods) > findDistance(newState, foods)) or (state.getNumFood() > newState.getNumFood()))
+
+    #Loop converting booleans to features.
     for i in range(len(willBeFeatures)):
         features[i] = -1
         if willBeFeatures[i]:
