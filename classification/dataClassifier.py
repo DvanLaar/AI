@@ -80,7 +80,7 @@ def enhancedFeatureExtractorDigit(datum):
     features =  basicFeatureExtractorDigit(datum)
     whitepixels = 0
     "*** YOUR CODE HERE ***"
-    statement = true
+    statement = True
     for x in range(DIGIT_DATUM_WIDTH):
         for y in range(DIGIT_DATUM_HEIGHT):
             if datum.getPixel(x, y) == 0:
@@ -88,7 +88,7 @@ def enhancedFeatureExtractorDigit(datum):
             if statement:
                 p = x
                 q = y
-                statement = false
+                statement = False
                 #A for-loop to check how many pixels aren't filled in.
                 
     edge = [(p, q)]
@@ -499,7 +499,7 @@ def runClassifier(args, options):
         print string3
         printImage(features_odds)
 
-    if((options.weights) & (options.classifier == "perceptron")):
+    if((options.weights)): #Had to change this
         for l in classifier.legalLabels:
             features_weights = classifier.findHighWeightFeatures(l)
             print ("=== Features with high weight for label %d ==="%l)

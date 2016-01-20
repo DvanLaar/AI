@@ -119,3 +119,20 @@ class MiraClassifier:
         return guesses
 
 
+    def findHighWeightFeatures(self, label):
+        """
+        Returns a list of the 100 features with the greatest weight for some label
+        """
+        featuresWeights = []
+
+        "*** YOUR CODE HERE ***"
+        #Code
+        tempWeights = self.weights[label].copy()
+        for i in range(100):
+            best = tempWeights.argMax()
+            featuresWeights.append(best)
+            tempWeights.pop(best)
+        #Code
+        "*** END MY CODE ***"
+
+        return featuresWeights
